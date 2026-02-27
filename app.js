@@ -27,7 +27,7 @@ app.use('/api/students-teachers', studentTeacherRouter);
 
 // Root route
 app.get('/', (req, res) => {
-    res.json({ message: 'Welcome to Teacher App API' });
+    res.json({ message: 'Welcome to Teacher App Api new' });
 });
 
 // Start server locally
