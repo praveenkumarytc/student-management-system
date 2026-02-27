@@ -1,17 +1,21 @@
 const mysql = require('mysql2');
 
+// Local dev: set USE_LOCAL_DB=1 to use local MySQL (e.g. docker compose) and avoid Railway IP restrictions
+const defaultLocalUrl = 'mysql://root:localdev@127.0.0.1:3307/railway';
+const databaseUrl = process.env.USE_LOCAL_DB === '1'
+  ? (process.env.LOCAL_DATABASE_URL || defaultLocalUrl)
+  : (process.env.DATABASE_URL || process.env.MYSQL_PUBLIC_URL || process.env.MYSQL_URL);
+
+if (!databaseUrl) {
+  throw new Error(
+    'Missing database URL. Set DATABASE_URL, MYSQL_PUBLIC_URL, or MYSQL_URL in .env (or USE_LOCAL_DB=1 for local MySQL)'
+  );
+}
+
 const pool = mysql.createPool({
-    host: process.env.DB_HOST || 'localhost',
-    user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || 'root1234',
-    database: process.env.DB_NAME || 'demo',
-    waitForConnections: true,
-    connectionLimit: 10,
-    maxIdle: 10,
-    idleTimeout: 60000,
-    queueLimit: 0,
-    enableKeepAlive: true,
-    keepAliveInitialDelay: 0
-}); 
+  uri: databaseUrl,
+  waitForConnections: true,
+  connectionLimit: 10,
+});
 
 module.exports = pool.promise();

@@ -1,0 +1,17 @@
+# Local MySQL for development (avoids Railway public IP restrictions)
+# Usage: docker compose up -d   then set USE_LOCAL_DB=1 and DATABASE_URL in .env (see below)
+services:
+  mysql:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: localdev
+      MYSQL_DATABASE: railway
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./docker/mysql-init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-plocaldev"]
+      interval: 5s
+      timeout: 5s
+      retries: 10

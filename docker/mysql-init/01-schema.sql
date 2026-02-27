@@ -1,0 +1,38 @@
+-- Local dev schema (matches app models)
+USE railway;
+
+CREATE TABLE IF NOT EXISTS schools (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  board VARCHAR(255) DEFAULT NULL,
+  address TEXT DEFAULT NULL,
+  est_in INT DEFAULT NULL,
+  created_at DATETIME(6) DEFAULT NULL,
+  updated_at DATETIME(6) DEFAULT NULL
+);
+
+CREATE TABLE IF NOT EXISTS teachers (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  school_id INT DEFAULT NULL,
+  name VARCHAR(255) DEFAULT NULL,
+  subject VARCHAR(255) DEFAULT NULL,
+  created_at DATETIME(6) DEFAULT NULL,
+  updated_at DATETIME(6) DEFAULT NULL
+);
+
+CREATE TABLE IF NOT EXISTS students (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  school_id INT DEFAULT NULL,
+  name VARCHAR(255) NOT NULL,
+  classes VARCHAR(255) DEFAULT NULL,
+  roll_number VARCHAR(255) DEFAULT NULL,
+  dob DATE DEFAULT NULL,
+  created_at DATETIME(6) DEFAULT NULL,
+  updated_at DATETIME(6) DEFAULT NULL
+);
+
+CREATE TABLE IF NOT EXISTS student_teacher (
+  student_id INT NOT NULL,
+  teacher_id INT NOT NULL,
+  PRIMARY KEY (student_id, teacher_id)
+);
