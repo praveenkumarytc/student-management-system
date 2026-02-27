@@ -1,7 +1,6 @@
 const Student = require("../models/student");
-
-// Create Student
 const db = require("../utils/database_utils");
+const { notifyStudentEvent } = require("../utils/webhook");
 
 const createStudent = async (
   req,
@@ -67,6 +66,17 @@ const createStudent = async (
 
     await connection.commit();
     connection.release();
+
+    const payload = {
+      id: studentId,
+      school_id,
+      name,
+      classes,
+      roll_number,
+      dob,
+      teacher_ids,
+    };
+    notifyStudentEvent("student.created", payload);
 
     res.status(201).json({
       message:
@@ -244,6 +254,16 @@ const updateStudent = async (
     await connection.commit();
     connection.release();
 
+    notifyStudentEvent("student.updated", {
+      id: parseInt(studentId, 10),
+      school_id,
+      name,
+      classes,
+      roll_number,
+      dob,
+      teacher_ids,
+    });
+
     res.json({
       message:
         "Student and teacher assignments updated successfully",
@@ -280,6 +300,8 @@ const deleteStudent = async (
         error: "Student not found",
       });
     }
+
+    notifyStudentEvent("student.deleted", { id: parseInt(studentId, 10) });
 
     res.json({
       message:

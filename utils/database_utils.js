@@ -5,7 +5,8 @@ const mysql = require('mysql2');
 const isProduction = process.env.NODE_ENV === 'production';
 const useLocalDb = process.env.USE_LOCAL_DB === '1' && !isProduction;
 
-const defaultLocalUrl = 'mysql://root:localdev@127.0.0.1:3307/railway';
+// 3307 = Docker; 3306 = Homebrew MySQL. Prefer LOCAL_DATABASE_URL in .env.
+const defaultLocalUrl = 'mysql://app:localdev@127.0.0.1:3306/railway';
 const databaseUrl = useLocalDb
   ? (process.env.LOCAL_DATABASE_URL || defaultLocalUrl)
   : (process.env.DATABASE_URL || process.env.MYSQL_PUBLIC_URL || process.env.MYSQL_URL);
